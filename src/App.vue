@@ -1,5 +1,6 @@
 <template>
   <div class="container py-5">
+    <alert text="submit failed" v-if="error"/>
     <card>
       <template v-slot:content>
         <h1 class="card-title">Submit A Todo</h1>
@@ -26,7 +27,7 @@
     </div>
     <div class="row mt-3" v-else>
       <div class="col-md-4 my-2" v-for="todo in todos" :key="todo.id">
-        <todo :todo="todo" @delete="deleteData" />
+        <todo :todo="todo" @delete="deleteData(todo.id)"/>
       </div>
     </div>
   </div>
@@ -36,39 +37,56 @@
 import Card from "@/components/Card.vue";
 import Input from "@/components/Input.vue";
 import Todo from "@/components/Todo.vue";
-import { ref, computed, reactive, readonly } from "vue";
+import Alert from "@/components/Alert.vue";
+import { ref, computed, reactive, readonly, watchEffect } from "vue";
 import { v4 as uuidv4 } from "uuid";
 export default {
   name: "App",
   setup() {
     const title = ref("");
     const description = ref("");
-    const error = ref(true);
-    const todos = reactive([]);
-
-    console.log(readonly(todos));
+    const error = ref(false);
+    let todos = ref();
 
     const submitData = () => {
       const todoObject = {
-        id: uuidv4,
+        id: uuidv4(),
         title: title.value,
         status: false,
         description: description.value,
       };
-      todos.push(todoObject);
+      if(title.value !== "" && description.value !== ""){
+        todos.value.push(todoObject);
+        title.value = "";
+        description.value = "";
+      }else{
+        error.value = true;
+      }
     };
-    const deleteData = (value) => {
-      console.log(value);
+
+    const deleteData = id => {
+      const findTodo = todos.value.filter(todo => todo.id !== id);
+      todos.value = findTodo;
     };
+
+    watchEffect(() => {
+      if(title.value.length > 0 || description.value.length > 0){
+        error.value = false;
+      }
+    })
+
     return {
       Card,
       Input,
       Todo,
+      Alert,
       title,
       description,
       todos,
       submitData,
+      deleteData,
+      error
     };
-  },
+  }
 };
 </script>

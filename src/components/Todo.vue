@@ -11,7 +11,7 @@
         <input type="checkbox" />
         {{ todo.status ? "Done" : "Undone" }}
       </div>
-      <button class="btn btn-danger">Delete</button>
+      <button class="btn btn-danger" @click="$emit('delete')">Delete</button>
     </div>
   </div>
 </template>
@@ -25,5 +25,6 @@ export default {
       type: String,
     },
   },
+  emits : ['delete']
 };
 </script>
