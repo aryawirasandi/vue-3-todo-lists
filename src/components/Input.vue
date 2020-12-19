@@ -10,13 +10,12 @@
       aria-describedby="input your todo here"
       :id="label"
       :value="value"
-      @input="$emit('update:value', $event.target.value)"
+      @input="$emit('input', $event.target.value)"
     />
     <!-- <div :class="valids">{{ validMesssage }}</div> -->
   </div>
 </template>
 <script>
-import { computed } from "vue";
 export default {
   props: {
     label: {
@@ -32,6 +31,7 @@ export default {
       type: Boolean,
     },
   },
+  emits: ['input'],
   setup(_) {
     const valids = {
       "invalid-feedback": _.isError,
