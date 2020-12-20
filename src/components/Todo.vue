@@ -1,7 +1,7 @@
 <template>
   <div class="card border-0 shadow">
     <div class="card-body">
-      <div v-if="todo.id === id && todo.isUpdate === true">
+      <div v-if="todo.isUpdate === true">
         <div>
           <Input label="Update Todo" 
             @input="changeTitle"
@@ -22,7 +22,7 @@
             </button>
           </div>
           <div class="col-4">
-            <button class="btn btn-success" @click="$emit('store')">
+            <button class="btn btn-success" @click="store(todo.id)">
               Update
             </button>
           </div>
@@ -59,6 +59,7 @@
 <script>
 import Input from "@/components/Input.vue";
 import Card from "@/components/Card.vue";
+import { reactive } from "vue";
 export default {
   props: {
     todo: {
@@ -80,10 +81,26 @@ export default {
   },
   emits: ["delete", "update:status", "update:status", "edit", "cancel"],
   components: { Input, Card },
+  emits : ['store'],
   setup(_){
+    const update = reactive({
+      title : "",
+      description : ""
+    })
+    const store = (id) => {
+      const dataToUpdate = [
+        {
+          id : id,
+          title : "",
+          description : "",
+        }
+      ]
+      $emit('store', id)
+    }
     return {
-      changeTitle: value => _.selected.title = value,
-      changeDescription: value => _.selected.description = value
+      update,
+      changeTitle: value => update.title = value,
+      changeDescription: value => update.description = value
     }
   }
 };

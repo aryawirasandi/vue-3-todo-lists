@@ -12,11 +12,9 @@
         <template v-slot:content>
           <div class="mb-3">
             <Input label="todo" @input="inputTitle" :value="title"/>
-            {{ title }}
           </div>
           <div class="mb-3">
             <Input label="description" @input="inputDesc" :value="description" />
-            {{ description }}
           </div>
           <div class="mb-3">
             <button type="submit" class="btn btn-primary">Submit A Todo</button>
@@ -28,7 +26,6 @@
       <h1 class="text-center">There is not data</h1>
     </div>
     <div class="row mt-3" v-else>
-      {{ selected }}
       <div class="col-md-4 my-2" v-for="todo in todos.data" :key="todo.id">
         <todo 
         :todo="todo" 
@@ -107,11 +104,11 @@ export default {
     const inputTitle = (value) => title.value = value;
     const inputDesc = (value) => description.value = value;
 
-    // watchEffect(() => {
-    //   if(title.value.length > 0 || description.value.length > 0){
-    //     error.value = false
-    //   }
-    // })
+    watchEffect(() => {
+      if(title.value.length > 0 || description.value.length > 0){
+        error.value = false
+      }
+    })
     return {
       Card,
       Input,
