@@ -16,6 +16,7 @@
   </div>
 </template>
 <script>
+import { watchEffect } from 'vue';
 export default {
   props: {
     label: {
@@ -26,9 +27,10 @@ export default {
     },
     invalidMessage: {
       type: String,
+      default : null
     },
     isError: {
-      type: Boolean,
+      type: Object,
     },
   },
   emits: ['input'],

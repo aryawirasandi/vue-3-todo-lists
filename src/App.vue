@@ -14,7 +14,7 @@
             <Input label="todo" @input="inputTitle" :value="title"/>
           </div>
           <div class="mb-3">
-            <Input label="description" @input="inputDesc" :value="description" />
+            <Input label="description" @input="inputDesc" :value="description"/>
           </div>
           <div class="mb-3">
             <button type="submit" class="btn btn-primary">Submit A Todo</button>
@@ -35,6 +35,7 @@
         @delete="deleteData(todo.id)" 
         @edit="showData(todo.id)"
         @cancel="cancel(todo.id)"
+        @store="updateData"
          v-model:status="todo.status" 
         />
       </div>
@@ -100,6 +101,13 @@ export default {
       todos.data = findTodo;
       return todos.data;
     };
+
+    const updateData = value => {
+      const findTodo = todos.data.find(todo => todo.id === value.id);
+      findTodo.title = value.title;
+      findTodo.description = value.description;
+      findTodo.isUpdate = false;
+    }
     
     const inputTitle = (value) => title.value = value;
     const inputDesc = (value) => description.value = value;
@@ -125,7 +133,8 @@ export default {
       selected,
       inputTitle,
       inputDesc,
-      event
+      event,
+      updateData
     };
   }
 };
