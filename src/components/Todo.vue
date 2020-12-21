@@ -79,28 +79,28 @@ export default {
       type : Object
     }
   },
-  emits: ["delete", "update:status", "update:status", "edit", "cancel"],
+  emits: ["delete", "update:status", 'store', 'edit', 'cancel'],
   components: { Input, Card },
-  emits : ['store'],
-  setup(_){
+  setup(_, { emit }){
     const update = reactive({
       title : "",
       description : ""
     })
-    const store = (id) => {
-      const dataToUpdate = [
-        {
-          id : id,
-          title : "",
-          description : "",
-        }
-      ]
-      $emit('store', id)
-    }
+    
     return {
       update,
       changeTitle: value => update.title = value,
       changeDescription: value => update.description = value
+    }
+  },
+  methods : {
+    store(id){
+      const dataToUpdate = {
+          id : id,
+          title : this.update.title,
+          description : this.update.description,
+        }
+      this.$emit('store', dataToUpdate);
     }
   }
 };

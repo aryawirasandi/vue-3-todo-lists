@@ -10,12 +10,13 @@
       aria-describedby="input your todo here"
       :id="label"
       :value="value"
-      @input="$emit('input', $event.target.value)"
+      @input="input($event.target.value)"
     />
     <!-- <div :class="valids">{{ validMesssage }}</div> -->
   </div>
 </template>
 <script>
+import { watchEffect } from 'vue';
 export default {
   props: {
     label: {
@@ -26,9 +27,10 @@ export default {
     },
     invalidMessage: {
       type: String,
+      default : null
     },
     isError: {
-      type: Boolean,
+      type: Object,
     },
   },
   emits: ['input'],
@@ -46,5 +48,10 @@ export default {
       validForms,
     };
   },
+  methods : {
+    input(value){
+      this.$emit('input', value)
+    }
+  }
 };
 </script>

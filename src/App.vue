@@ -1,6 +1,6 @@
 <template>
   <div class="container py-5">
-    <alert text="submit failed" v-if="error"/>
+    <alert :text="errorMessage" v-if="error"/>
     <card>
       <template v-slot:content>
         <h1 class="card-title">Submit A Todo</h1>
@@ -14,7 +14,7 @@
             <Input label="todo" @input="inputTitle" :value="title"/>
           </div>
           <div class="mb-3">
-            <Input label="description" @input="inputDesc" :value="description" />
+            <Input label="description" @input="inputDesc" :value="description"/>
           </div>
           <div class="mb-3">
             <button type="submit" class="btn btn-primary">Submit A Todo</button>
@@ -28,14 +28,16 @@
     <div class="row mt-3" v-else>
       <div class="col-md-4 my-2" v-for="todo in todos.data" :key="todo.id">
         <todo 
-        :todo="todo" 
-        :status="todo.status"
-        :id="todo.id"
-        :selected="selected.data"
-        @delete="deleteData(todo.id)" 
-        @edit="showData(todo.id)"
-        @cancel="cancel(todo.id)"
-         v-model:status="todo.status" 
+          :todo="todo" 
+          :status="todo.status"
+          :id="todo.id"
+          :selected="selected.data"
+          @delete="deleteData(todo.id)" 
+          @edit="showData(todo.id)"
+          @cancel="cancel(todo.id)"
+          @store="updateData"
+          v-model:status="todo.status" 
+          :isError="validateForm"
         />
       </div>
     </div>
@@ -47,7 +49,7 @@ import Card from "@/components/Card.vue";
 import Input from "@/components/Input.vue";
 import Todo from "@/components/Todo.vue";
 import Alert from "@/components/Alert.vue";
-import { ref, reactive, computed  , watchEffect, event } from "vue";
+import { ref, reactive, computed  , watchEffect } from "vue";
 import { v4 as uuidv4 } from "uuid";
 export default {
   name: "App",
@@ -55,13 +57,15 @@ export default {
     const title = ref("");
     const description = ref("");
     const error = ref(false);
+    const errorMessage = ref("");
     const selected = reactive({
         data : {}
     })
     const todos = reactive({
         data : []
     });
-  
+
+    
 
     const submitData = () => {
       const todoObject = {
@@ -73,9 +77,18 @@ export default {
       };
       if(title.value !== "" && description.value !== ""){
         todos.data = [...todos.data, todoObject];
+        error.value = false;
+        errorMessage.value = "";
         clearForm();
-      }else{
-        error.value = true;
+      }else if(title.value === ""){
+         error.value = true;
+         errorMessage.value = "Title harus di isi";
+      }else if(description.value === ""){
+         error.value = true;
+         errorMessage.value = "Description harus di isi";
+      }else if (description.value === "" && title.value === ""){
+         error.value = true;
+         errorMessage.value = "Kedua form harus di isi";
       }
     }
 
@@ -100,6 +113,13 @@ export default {
       todos.data = findTodo;
       return todos.data;
     };
+
+    const updateData = value => {
+      const findTodo = todos.data.find(todo => todo.id === value.id);
+      findTodo.title = value.title;
+      findTodo.description = value.description;
+      findTodo.isUpdate = false;
+    }
     
     const inputTitle = (value) => title.value = value;
     const inputDesc = (value) => description.value = value;
@@ -109,6 +129,20 @@ export default {
         error.value = false
       }
     })
+
+    // const validateForm = computed(() => {
+    //     if(title.value.length === 0){
+    //       return {
+    //          "Title tidak boleh kosong",
+    //           error.value : true
+    //       }
+    //     }else if (description.value.length === 0){
+    //       return {
+    //         "Description tidak boleh kosong",
+    //         error.value :  true
+    //       }
+    //     }
+    // })
     return {
       Card,
       Input,
@@ -125,7 +159,9 @@ export default {
       selected,
       inputTitle,
       inputDesc,
-      event
+      updateData,
+      // validateForm,
+      errorMessage
     };
   }
 };
