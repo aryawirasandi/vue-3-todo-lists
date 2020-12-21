@@ -79,9 +79,8 @@ export default {
       type : Object
     }
   },
-  emits: ["delete", "update:status", "update:status", "edit", "cancel"],
+  emits: ["delete", "update:status", 'store', 'edit', 'cancel'],
   components: { Input, Card },
-  emits : ['store', 'edit', 'cancel'],
   setup(_, { emit }){
     const update = reactive({
       title : "",
@@ -98,8 +97,8 @@ export default {
     store(id){
       const dataToUpdate = {
           id : id,
-          title : this.update.title.length === 0 ? this.todo.title : this.update.title,
-          description : this.update.description.length === 0 ? this.todo.description : this.update.description,
+          title : this.update.title,
+          description : this.update.description,
         }
       this.$emit('store', dataToUpdate);
     }

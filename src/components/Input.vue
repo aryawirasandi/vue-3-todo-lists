@@ -10,7 +10,7 @@
       aria-describedby="input your todo here"
       :id="label"
       :value="value"
-      @input="$emit('input', $event.target.value)"
+      @input="input($event.target.value)"
     />
     <!-- <div :class="valids">{{ validMesssage }}</div> -->
   </div>
@@ -48,5 +48,10 @@ export default {
       validForms,
     };
   },
+  methods : {
+    input(value){
+      this.$emit('input', value)
+    }
+  }
 };
 </script>
