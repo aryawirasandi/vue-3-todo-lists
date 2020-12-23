@@ -1,6 +1,6 @@
 <template>
   <div class="container py-5">
-    <alert :text="errorMessage" v-if="error"/>
+    <alert :text="errorMessage" v-if="error" />
     <card>
       <template v-slot:content>
         <h1 class="card-title">Submit A Todo</h1>
@@ -11,10 +11,20 @@
       <card>
         <template v-slot:content>
           <div class="mb-3">
-            <Input label="todo" @input="inputTitle" :value="title"/>
+            <Input
+              label="todo"
+              @input="inputTitle"
+              :value="title"
+              :validate="validateForm"
+            />
           </div>
           <div class="mb-3">
-            <Input label="description" @input="inputDesc" :value="description"/>
+            <Input
+              label="description"
+              @input="inputDesc"
+              :value="description"
+              :validate="validateForm"
+            />
           </div>
           <div class="mb-3">
             <button type="submit" class="btn btn-primary">Submit A Todo</button>
@@ -27,17 +37,16 @@
     </div>
     <div class="row mt-3" v-else>
       <div class="col-md-4 my-2" v-for="todo in todos.data" :key="todo.id">
-        <todo 
-          :todo="todo" 
+        <todo
+          :todo="todo"
           :status="todo.status"
           :id="todo.id"
           :selected="selected.data"
-          @delete="deleteData(todo.id)" 
+          @delete="deleteData(todo.id)"
           @edit="showData(todo.id)"
           @cancel="cancel(todo.id)"
           @store="updateData"
-          v-model:status="todo.status" 
-          :isError="validateForm"
+          v-model:status="todo.status"
         />
       </div>
     </div>
@@ -49,7 +58,7 @@ import Card from "@/components/Card.vue";
 import Input from "@/components/Input.vue";
 import Todo from "@/components/Todo.vue";
 import Alert from "@/components/Alert.vue";
-import { ref, reactive, computed  , watchEffect } from "vue";
+import { ref, reactive, computed, watchEffect } from "vue";
 import { v4 as uuidv4 } from "uuid";
 export default {
   name: "App",
@@ -59,13 +68,11 @@ export default {
     const error = ref(false);
     const errorMessage = ref("");
     const selected = reactive({
-        data : {}
-    })
-    const todos = reactive({
-        data : []
+      data: {},
     });
-
-    
+    const todos = reactive({
+      data: [],
+    });
 
     const submitData = () => {
       const todoObject = {
@@ -73,76 +80,82 @@ export default {
         title: title.value,
         status: false,
         description: description.value,
-        isUpdate : false,
+        isUpdate: false,
       };
-      if(title.value !== "" && description.value !== ""){
+      if (title.value !== "" && description.value !== "") {
         todos.data = [...todos.data, todoObject];
         error.value = false;
         errorMessage.value = "";
         clearForm();
-      }else if(title.value === ""){
-         error.value = true;
-         errorMessage.value = "Title harus di isi";
-      }else if(description.value === ""){
-         error.value = true;
-         errorMessage.value = "Description harus di isi";
-      }else if (description.value === "" && title.value === ""){
-         error.value = true;
-         errorMessage.value = "Kedua form harus di isi";
+      } else if (title.value === "") {
+        error.value = true;
+        errorMessage.value = "Title harus di isi";
+      } else if (description.value === "") {
+        error.value = true;
+        errorMessage.value = "Description harus di isi";
+      } else if (description.value === "" && title.value === "") {
+        error.value = true;
+        errorMessage.value = "Kedua form harus di isi";
       }
-    }
+    };
 
     const clearForm = () => {
-        title.value = "";
-        description.value = "";
-    }
-    
-    const showData = id => {
-      const selectedTodo = todos.data.find(todo => todo.id === id)
+      title.value = "";
+      description.value = "";
+    };
+
+    const showData = (id) => {
+      const selectedTodo = todos.data.find((todo) => todo.id === id);
       selected.data = selectedTodo;
       selectedTodo.isUpdate = !selectedTodo.isUpdate;
-    }
+    };
 
-    const cancel = id => {
+    const cancel = (id) => {
       showData(id);
-      selected.data = {}
-    }
+      selected.data = {};
+    };
 
-    const deleteData = id => {
-      const findTodo = todos.data.filter(todo => todo.id !== id);
+    const deleteData = (id) => {
+      const findTodo = todos.data.filter((todo) => todo.id !== id);
       todos.data = findTodo;
       return todos.data;
     };
 
-    const updateData = value => {
-      const findTodo = todos.data.find(todo => todo.id === value.id);
+    const updateData = (value) => {
+      const findTodo = todos.data.find((todo) => todo.id === value.id);
       findTodo.title = value.title;
       findTodo.description = value.description;
       findTodo.isUpdate = false;
-    }
-    
-    const inputTitle = (value) => title.value = value;
-    const inputDesc = (value) => description.value = value;
+    };
+
+    const inputTitle = (value) => (title.value = value);
+    const inputDesc = (value) => (description.value = value);
 
     watchEffect(() => {
-      if(title.value.length > 0 || description.value.length > 0){
-        error.value = false
+      if (title.value.length > 0 || description.value.length > 0) {
+        error.value = false;
       }
-    })
+    });
 
-    // const validateForm = computed(() => {
-    //     if(title.value.length === 0){
-    //       return {
-    //          "Title tidak boleh kosong",
-    //           error.value : true
-    //       }
-    //     }else if (description.value.length === 0){
-    //       return {
-    //         "Description tidak boleh kosong",
-    //         error.value :  true
-    //       }
-    //     }
-    // })
+    const validateForm = computed(() => {
+      if (title.value.length === 0) {
+        return {
+          type: "message",
+          message: "Title tidak boleh kosong",
+          error: true,
+        };
+      } else if (description.value.length === 0) {
+        return {
+          message: "Description tidak boleh kosong",
+          error: true,
+        };
+      } else {
+        return {
+          message: "",
+          error: false,
+        };
+      }
+    });
     return {
       Card,
       Input,
@@ -160,9 +173,9 @@ export default {
       inputTitle,
       inputDesc,
       updateData,
-      // validateForm,
-      errorMessage
+      validateForm,
+      errorMessage,
     };
-  }
+  },
 };
 </script>
