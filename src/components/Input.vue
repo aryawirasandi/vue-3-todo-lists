@@ -6,7 +6,6 @@
     <input
       type="text"
       class="form-control"
-      :class="validForms"
       aria-describedby="input your todo here"
       :id="label"
       :value="value"
