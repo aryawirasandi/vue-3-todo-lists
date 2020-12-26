@@ -42,6 +42,7 @@
           :status="todo.status"
           :id="todo.id"
           :selected="selected.data"
+          :animation="todo.animateEffect"
           @delete="deleteData(todo.id)"
           @edit="showData(todo.id)"
           @cancel="cancel(todo.id)"
@@ -81,6 +82,7 @@ export default {
         status: false,
         description: description.value,
         isUpdate: false,
+        animateEffect: "animate__animated animate__bounce"
       };
       if (title.value !== "" && description.value !== "") {
         todos.data = [...todos.data, todoObject];
@@ -117,6 +119,7 @@ export default {
 
     const deleteData = (id) => {
       const findTodo = todos.data.filter((todo) => todo.id !== id);
+      findTodo.animateEffect = "animate__animated animate__fadeout";
       todos.data = findTodo;
       return todos.data;
     };

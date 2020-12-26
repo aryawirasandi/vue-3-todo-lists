@@ -1,5 +1,5 @@
 <template>
-  <div class="card border-0 shadow">
+  <div class="card border-0 shadow" :class="animation">
     <div class="card-body">
       <div v-if="todo.isUpdate === true">
         <div>
@@ -77,6 +77,9 @@ export default {
     },
     selected : {
       type : Object
+    },
+    animation : {
+      type : String
     }
   },
   emits: ["delete", "update:status", 'store', 'edit', 'cancel'],
