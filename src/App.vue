@@ -82,10 +82,10 @@ export default {
         clearForm();
       }else if(title.value === ""){
          error.value = true;
-         errorMessage.value = "Title harus di isi";
+         errorMessage.value = "Title must be filled";
       }else if(description.value === ""){
          error.value = true;
-         errorMessage.value = "Description harus di isi";
+         errorMessage.value = "Description must be filled";
       }else if (description.value === "" && title.value === ""){
          error.value = true;
          errorMessage.value = "Kedua form harus di isi";
