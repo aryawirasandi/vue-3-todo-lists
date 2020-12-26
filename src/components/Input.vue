@@ -11,11 +11,11 @@
       :value="value"
       @input="input($event.target.value)"
     />
-    <!-- <div :class="valids">{{ validMesssage }}</div> -->
+    <div :class="valids">{{ message }}</div>
   </div>
 </template>
 <script>
-import { watchEffect } from 'vue';
+import { watchEffect, computed } from "vue";
 export default {
   props: {
     label: {
@@ -24,33 +24,38 @@ export default {
     value: {
       type: String,
     },
-    invalidMessage: {
-      type: String,
-      default : null
-    },
-    isError: {
+    validate: {
       type: Object,
+      default: {
+        message: "",
+        error: false,
+      },
     },
   },
-  emits: ['input'],
+  emits: ["input"],
   setup(_) {
     const valids = {
-      "invalid-feedback": _.isError,
-      "valid-feedback": !_.isError,
+      "invalid-feedback": _.validate.error,
+      "valid-feedback": !_.validate.error,
     };
     const validForms = {
-      "is-valid": !_.isError,
-      "is-invalid": _.isError,
+      "is-valid": !_.validate.error,
+      "is-invalid": _.validate.error,
     };
+    const message = computed(() =>
+      _.validate.message !== "" ? _.validate.message : ""
+    );
+
     return {
       valids,
       validForms,
+      message,
     };
   },
-  methods : {
-    input(value){
-      this.$emit('input', value)
-    }
-  }
+  methods: {
+    input(value) {
+      this.$emit("input", value);
+    },
+  },
 };
 </script>
