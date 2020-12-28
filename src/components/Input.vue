@@ -11,7 +11,6 @@
       :value="value"
       @input="input($event.target.value)"
     />
-    <div :class="valids">{{ message }}</div>
   </div>
 </template>
 <script>
@@ -24,34 +23,8 @@ export default {
     value: {
       type: String,
     },
-    validate: {
-      type: Object,
-      default: {
-        message: "",
-        error: false,
-      },
-    },
   },
   emits: ["input"],
-  setup(_) {
-    const valids = {
-      "invalid-feedback": _.validate.error,
-      "valid-feedback": !_.validate.error,
-    };
-    const validForms = {
-      "is-valid": !_.validate.error,
-      "is-invalid": _.validate.error,
-    };
-    const message = computed(() =>
-      _.validate.message !== "" ? _.validate.message : ""
-    );
-
-    return {
-      valids,
-      validForms,
-      message,
-    };
-  },
   methods: {
     input(value) {
       this.$emit("input", value);
