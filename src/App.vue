@@ -58,7 +58,7 @@ import Card from "@/components/Card.vue";
 import Input from "@/components/Input.vue";
 import Todo from "@/components/Todo.vue";
 import Alert from "@/components/Alert.vue";
-import { useTodosAction } from "@/utils/todos.js";
+import { useTodosAction } from "@/utils/todos.ts";
 export default {
   name: "App",
   setup() {

@@ -1,6 +1,7 @@
 
-import { ref, reactive, watchEffect, computed } from "vue"
+import { ref, reactive, watchEffect, computed, onMounted, toRefs } from "vue"
 import { v4 as uuidv4 } from "uuid";
+
 const useTodosAction = () => {
     const title = ref("");
     const description = ref("");
@@ -13,8 +14,14 @@ const useTodosAction = () => {
         data: [],
     });
 
+    const state = reactive({
+        message: "skjdsad",
+    });
+
+    onMounted(() => console.table(toRefs(state)))
+
     const animateError = computed(() => {
-        return error === true ? "animate__fadeOutDown" : "animate__fadeInUp"
+        return error ? "animate__fadeOutDown" : "animate__fadeInUp"
     })
 
     const submitData = () => {
@@ -61,7 +68,6 @@ const useTodosAction = () => {
 
     const deleteData = (id) => {
         const findTodo = todos.data.filter((todo) => todo.id !== id);
-        findTodo.animateEffect = "animate__animated animate__fadeout";
         todos.data = findTodo;
         return todos.data;
     };
