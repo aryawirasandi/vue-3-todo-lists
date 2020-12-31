@@ -1,3 +1,4 @@
+# for development build
 FROM node:latest as build-stage
 
 WORKDIR /app
@@ -11,16 +12,23 @@ RUN yarn install
 
 COPY ./ .
 
+ENV PORT=8080
 
-RUN yarn run build
+EXPOSE 8080
 
-FROM nginx as production-stage
+CMD [ "yarn", "serve" ];
 
-RUN mkdir /app
+# for production build
 
-COPY --from=build-stage /app/dist /app
+# RUN yarn run build
 
-COPY nginx.conf /etc/nginx/nginx.conf
+# FROM nginx as production-stage
+
+# RUN mkdir /app
+
+# COPY --from=build-stage /app/dist /app
+
+# COPY nginx.conf /etc/nginx/nginx.conf
 
 
-development setup
+# development setup
